@@ -39,7 +39,7 @@ addTaskCommand.action(async function (options) {
     );
     console.log(
       chalk.bgYellow(
-        `Make sure that the task status is either todo, inProgress or done`,
+        `Make sure that the task status is either todo, InProgress or done`,
       ),
     );
   }
