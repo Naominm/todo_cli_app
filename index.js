@@ -91,6 +91,30 @@ program.command("read-todos")
        console.log(chalk.bgRed(`Error reading todo`)) 
     }
 })
+ program.command("update-task")
+ .description("Updates the specified todo Item")
+ .requiredOption("-i, --id <value>","ID of the contact you want to update")
+ .option("-t, --title <value>","New Title")
+ .option("-d, --description <value>","New Description")
+ .option("-s, --status <value>","New Status")
+ .action(async function(options){
+    const id=options.id;
+    const newTitle=options.title;
+    const newDescription=options.description;
+    const newStatus=options.status;
 
-
+    try {
+        await client.todo.update({
+            where:{ id},
+            data:{
+            title:newTitle &&newTitle,
+            description:newDescription && newDescription,
+            status:newStatus && newStatus
+            }
+        })
+        console.log(chalk.bgGreen(`task has been updated successfully`))
+    } catch (e) {
+     console.log(chalk.bgRed(`error updating task`))   
+    }
+ })
 program.parseAsync();
