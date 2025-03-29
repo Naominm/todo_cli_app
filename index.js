@@ -79,7 +79,13 @@ program.command("read-todos")
     
     }else{
         const tasks=await client.todo.findMany();
-        console.log(tasks)
+        const table=new Table({
+            head: ["ID","Title","Description","Status"]
+        })
+        tasks.forEach(function(taskItem){
+            table.push([taskItem.id,taskItem.title,taskItem.description,taskItem.status])
+        })
+        console.log(table.toString());
                 }
     } catch (e) {
        console.log(chalk.bgRed(`Error reading todo`)) 
