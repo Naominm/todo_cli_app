@@ -2,6 +2,7 @@ import { Command } from "commander";
 import { PrismaClient } from "@prisma/client";
 import { nanoid } from "nanoid";
 import chalk from "chalk";
+import Table from "cli-table3"
 
 const program = new Command();
 const client = new PrismaClient();
@@ -55,6 +56,35 @@ addTaskCommand.action(async function (options) {
 
 program.command("read-todos")
 .description("Get all todos or the specified todo item")
+.option("-i, --id <value>", "The id of the specific Todo Item")
+.action(async function(options){
+    const todoID=options.id;
+    try {
+        if(todoID){
+    const foundTask= await client.todo.findFirst({
+  where:{
+    id:todoID
+  }
+    })
+    if(!foundTask){
+    console.log(chalk.bgYellow(`Task with ID ${todoID} was not found`));
+    }
+        else{
+    const table=new Table({
+        head: ["ID","Title","Description","Status"]
+    })
+    table.push([foundTask.id, foundTask.title,foundTask.description,foundTask.status])
+    console.log(table.toString());
+        }
+    
+    }else{
+        const tasks=await client.todo.findMany();
+        console.log(tasks)
+                }
+    } catch (e) {
+       console.log(chalk.bgRed(`Error reading todo`)) 
+    }
+})
 
 
 program.parseAsync();
