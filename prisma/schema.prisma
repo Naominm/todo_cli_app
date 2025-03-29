@@ -15,8 +15,9 @@ datasource db {
 
 model Todo{
   id String @id
-  title String
+  title String @unique
   description String
+  status String @default("todo")
 
-  @@map("todo_table")
+  @@map("todos_table")
 }
