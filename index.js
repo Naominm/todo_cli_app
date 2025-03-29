@@ -3,6 +3,7 @@ import { PrismaClient } from "@prisma/client";
 import { nanoid } from "nanoid";
 import chalk from "chalk";
 import Table from "cli-table3"
+import prompts from "prompts";
 
 const program = new Command();
 const client = new PrismaClient();
@@ -116,5 +117,25 @@ program.command("read-todos")
     } catch (e) {
      console.log(chalk.bgRed(`error updating task`))   
     }
+ })
+
+ program.command("delete-task")
+ .description("delete specific task")
+ .requiredOption("-i, --id <value>", "ID of the contact to be deleted")
+ .action(async function(options){
+    const id =options.id;
+    try {
+        await client.todo.delete({
+            where:{id}
+        })
+        console.log(chalk.bgGreen(`Contact deleted successfully`))
+    } catch (e) {
+       console.log(chalk.bgRed(`Error deleting contact`)) 
+    }
+ })
+ program.command("delete-all")
+ .description("deletes all contacts")
+ .action(function(){
+    console.log(chalk.bgRed("Hold on thats a dangerous action"))
  })
 program.parseAsync();
