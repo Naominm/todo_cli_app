@@ -3,7 +3,7 @@ import { PrismaClient } from "@prisma/client";
 import { nanoid } from "nanoid";
 import chalk from "chalk";
 import Table from "cli-table3"
-import prompts from "prompts";
+import prompts from "prompts"
 
 const program = new Command();
 const client = new PrismaClient();
