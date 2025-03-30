@@ -16,30 +16,46 @@ const validStatuses = ["todo", "InProgress", "done"];
 
 const addTaskCommand = program.command("add-task");
 addTaskCommand.description("Add a task to your todo list");
-addTaskCommand.requiredOption("-t, --title <value>", "The title of the task");
-addTaskCommand.requiredOption("-d, --description <value>","Add a description to the task");
-addTaskCommand.requiredOption("-s, --status <value>", "Add a status to your task")
-addTaskCommand.action(async function (options) {
-  const title = options.title;
-  const description = options.description;
-  const status=options.status;
+addTaskCommand.action(async function () {
+ const response=await prompts([
+  {
+    type:"text",
+    name:"taskTitle",
+    message:"Title of the Task"
+  },
+  {
+    type:"text",
+    name:"taskDescription",
+    message:"Description of the task"
+  },
+  {
+    type:"text",
+    name:"taskStatus",
+    message:"Status of the task"
+  }
+ ])
 
-  if (!validStatuses.includes(status)) {
+  if (!validStatuses.includes(response.taskStatus)) {
     console.log(chalk.bgRed(`Invalid status`));
     console.log(chalk.bgYellow(`Status must be one of: todo, InProgress, or done`));
     return;
   }
 
   try {
- await client.todo.create({
+  const insertedTask=await client.todo.create({
       data: {
         id: nanoid(4),
-        title,
-        description,
-        status,
+        title:response.taskTitle,
+        description:response.taskDescription,
+        status:response.taskStatus,
       },
     });
     console.log(chalk.green(`New todo Item added successfully🎇🎇`));
+    const table=new Table({
+      head:["id","Title","Description","Status"]
+    })
+    table.push([insertedTask.id,insertedTask.title,insertedTask.description,insertedTask.status])
+    console.log(table.toString())
   } catch (e) {
     console.log(chalk.bgRed(`There was an error adding new task❌ `));
     console.log(
@@ -55,7 +71,7 @@ addTaskCommand.action(async function (options) {
   }
 });
 
-program.command("read-todos")
+program.command("read-tasks")
 .description("Get all todos or the specified todo item")
 .option("-i, --id <value>", "The id of the specific Todo Item")
 .action(async function(options){
@@ -135,7 +151,24 @@ program.command("read-todos")
  })
  program.command("delete-all")
  .description("deletes all the Tasks")
- .action(function(){
-    console.log(chalk.bgRed("Hold on thats a dangerous action"))
+ .action( async function(){
+console.log(chalk.bgRed(`!!!!HOLD ON THATS A DANGEROUS COMMAND THERE!!!!`))
+try {
+   const response=await prompts({
+    type:"multiselect",
+    name:"Decision",
+    message:"Are you sure you want to delete all the Todo Tasks?",
+    choices:[
+      {title:"Yes",value:'yes'},
+      {title:"No", value:'no'}
+    ]
+   })
+  if(response.Decision[0]==='yes'){
+    await client.todo.deleteMany();
+    console.log(chalk.bgGreen(`Successfully deleted all contacts`))
+  }
+} catch (e) {
+  console.log(chalk.bgRed(`There was an error!`))
+}
  })
 program.parseAsync();
