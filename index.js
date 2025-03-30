@@ -165,7 +165,7 @@ try {
    })
   if(response.Decision[0]==='yes'){
     await client.todo.deleteMany();
-    console.log(chalk.bgGreen(`Successfully deleted all contacts`))
+    console.log(chalk.bgGreen(`Successfully deleted all tasks`))
   }
 } catch (e) {
   console.log(chalk.bgRed(`There was an error!`))
