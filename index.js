@@ -94,7 +94,7 @@ program.command("read-todos")
 })
  program.command("update-task")
  .description("Updates the specified todo Item")
- .requiredOption("-i, --id <value>","ID of the contact you want to update")
+ .requiredOption("-i, --id <value>","ID of the task you want to update")
  .option("-t, --title <value>","New Title")
  .option("-d, --description <value>","New Description")
  .option("-s, --status <value>","New Status")
@@ -121,20 +121,20 @@ program.command("read-todos")
 
  program.command("delete-task")
  .description("delete specific task")
- .requiredOption("-i, --id <value>", "ID of the contact to be deleted")
+ .requiredOption("-i, --id <value>", "ID of the task to be deleted")
  .action(async function(options){
     const id =options.id;
     try {
         await client.todo.delete({
             where:{id}
         })
-        console.log(chalk.bgGreen(`Contact deleted successfully`))
+        console.log(chalk.bgGreen(`Task deleted successfully`))
     } catch (e) {
-       console.log(chalk.bgRed(`Error deleting contact`)) 
+       console.log(chalk.bgRed(`Error deletingTask`))
     }
  })
  program.command("delete-all")
- .description("deletes all contacts")
+ .description("deletes all the Tasks")
  .action(function(){
     console.log(chalk.bgRed("Hold on thats a dangerous action"))
  })
